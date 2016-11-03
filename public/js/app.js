@@ -5,7 +5,20 @@ socket.on('connect',function () {
 });
 
 
-socket.on('message',function (message) {
+socket.on('message',function (message) {//Here is taking the message fromm the server and shows it
     console.log('New message : ');
     console.log(message.text);
+});
+var $form= jQuery('#message-form');
+
+$form.on('submit',function () {//Here is sending the message to the service
+    event.preventDefault();
+    var $message=    $form.find('input[name=message]')
+';'
+    socket.emit('message',{
+        text:$message.val()
+    });
+
+    $message.val('');
+
 });
