@@ -12,6 +12,30 @@ app.use(express.static(__dirname+'/public'));
 
 var clientInfo={};
 
+function sendCurrentUsers(socket) {
+    var info=clientInfo[socket.id];
+    var user=[];
+
+    if (typeof info==='undefined'){
+        return;
+
+    }
+    Object.keys(clientInfo).forEach(function (socketId) {
+            var userInfo=clientInfo[socketId];
+
+            if (info.room===userInfo.room){
+                user.push(userInfo.name);
+            }
+
+    });
+
+    socket.emit('message',{
+        name:'System',
+        text:'Current users '+user.join(', '),
+        timestamp:moment().valueOf()
+    });
+}
+
 io.on('connection',function (socket) {
     console.log('User connected via socket.io!!');
 
@@ -27,8 +51,16 @@ io.on('connection',function (socket) {
 
     socket.on('message',function (message) {
         console.log('Message Received : '+ message.text);
-        message.timestamp=moment().valueOf();
-        io.to(clientInfo[socket.id].room).emit('message',message);//sends the message to the room that the user is logged in
+
+        if (message.text==='@currentUsers'){
+            sendCurrentUsers(socket);
+        }else {
+            message.timestamp=moment().valueOf();
+            io.to(clientInfo[socket.id].room).emit('message',message);//sends the message to the room that the user is logged in
+
+        }
+
+
     });
 
     socket.on('disconnect',function () {
@@ -49,7 +81,7 @@ io.on('connection',function (socket) {
 
     socket.emit('message',{
         name:'System',
-        text:'Welcome to The chat application',
+        text:'Welcome to The chat application ',
         timestamp: moment().valueOf()
 
     });
