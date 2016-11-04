@@ -11,10 +11,18 @@ console.log(now.format('x'));
 console.log(now.format('x'));
 
 
-var timestamp=1478254671892;
+/*
+var test=now.format.('x').valueOf();
+*/
+console.log(test);
+var timestamp=1478255121591;
 var timestampMoment=moment.utc(timestamp);
 
 console.log(timestampMoment.local().format('h:mma'));
+
+
+
+
 /*
 now.subtract(1,'year');
 */
